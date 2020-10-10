@@ -35,7 +35,8 @@
                                     />
                                     <label
                                         v-if="!todo.edited"
-                                        @dblclick="editTodo(todo)"
+                                        data-placement="top"
+                                        title="Clique para editar"
                                         >{{ todo.title }}</label
                                     >
                                     <input
@@ -184,4 +185,10 @@ ul li.checked::before {
 .todo-list-edit:focus {
     outline: 3px solid rgb(255, 145, 0);
 }
+
+.todo-list-edit:focus-within {
+  box-shadow: 0px 0.2em 2.5em #c4c4c4;
+  transform: scale(1.025);
+}
+
 </style>

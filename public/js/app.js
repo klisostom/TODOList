@@ -2009,6 +2009,7 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
 /* harmony default export */ __webpack_exports__["default"] = ({
   name: "todo-list",
   data: function data() {
@@ -6495,7 +6496,7 @@ exports = module.exports = __webpack_require__(/*! ../../../node_modules/css-loa
 
 
 // module
-exports.push([module.i, "\n* {\n    box-sizing: border-box;\n}\nul {\n    margin: 0;\n    padding: 0;\n}\n\n/* Style the list items */\nul li {\n    cursor: pointer;\n    position: relative;\n    padding: 12px 8px 12px 40px;\n    font-size: 18px;\n    transition: 0.2s;\n\n    /* make the list items unselectable */\n    -webkit-user-select: none;\n    -moz-user-select: none;\n    -ms-user-select: none;\n    user-select: none;\n}\n\n/* When clicked on, add a background color and strike out text */\nul li.checked {\n    background: #888;\n    color: #fff;\n    text-decoration: line-through;\n}\n\n/* Add a \"checked\" mark when clicked on */\nul li.checked::before {\n    content: \"\";\n    position: absolute;\n    border-color: #fff;\n    border-style: solid;\n    border-width: 0 2px 2px 0;\n    top: 10px;\n    left: 16px;\n    transform: rotate(45deg);\n    height: 15px;\n    width: 7px;\n}\n.todo-list li:last-child {\n    border-bottom: none;\n}\n.todo-list-edit {\n    border: #888;\n}\n.todo-list-edit:focus {\n    outline: 3px solid rgb(255, 145, 0);\n}\n", ""]);
+exports.push([module.i, "\n* {\n    box-sizing: border-box;\n}\nul {\n    margin: 0;\n    padding: 0;\n}\n\n/* Style the list items */\nul li {\n    cursor: pointer;\n    position: relative;\n    padding: 12px 8px 12px 40px;\n    font-size: 18px;\n    transition: 0.2s;\n\n    /* make the list items unselectable */\n    -webkit-user-select: none;\n    -moz-user-select: none;\n    -ms-user-select: none;\n    user-select: none;\n}\n\n/* When clicked on, add a background color and strike out text */\nul li.checked {\n    background: #888;\n    color: #fff;\n    text-decoration: line-through;\n}\n\n/* Add a \"checked\" mark when clicked on */\nul li.checked::before {\n    content: \"\";\n    position: absolute;\n    border-color: #fff;\n    border-style: solid;\n    border-width: 0 2px 2px 0;\n    top: 10px;\n    left: 16px;\n    transform: rotate(45deg);\n    height: 15px;\n    width: 7px;\n}\n.todo-list li:last-child {\n    border-bottom: none;\n}\n.todo-list-edit {\n    border: #888;\n}\n.todo-list-edit:focus {\n    outline: 3px solid rgb(255, 145, 0);\n}\n.todo-list-edit:focus-within {\n  box-shadow: 0px 0.2em 2.5em #c4c4c4;\n  transform: scale(1.025);\n}\n\n", ""]);
 
 // exports
 
@@ -38406,10 +38407,9 @@ var render = function() {
                         ? _c(
                             "label",
                             {
-                              on: {
-                                dblclick: function($event) {
-                                  return _vm.editTodo(todo)
-                                }
+                              attrs: {
+                                "data-placement": "top",
+                                title: "Clique para editar"
                               }
                             },
                             [_vm._v(_vm._s(todo.title))]
