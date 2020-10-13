@@ -2,12 +2,7 @@
 
 ### Itens concluídos
 
-> 1.
-  a.
-  b.
-  c.
-  d.
-  g.
+> 1) a, b, c, d, g.
 
 ###
 - As credenciais do banco são configuradas no arquivo .env do laravel. Em seguida, basta apenas executar as migrations com o comando `php artisan migrate`.
