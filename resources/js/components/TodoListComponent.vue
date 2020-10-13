@@ -1,5 +1,7 @@
 <template>
+
     <div class="container">
+
         <div class="row justify-content-center">
             <div class="col-md-8">
                 <div class="card">
@@ -14,56 +16,45 @@
                                 aria-describedby="inputGroup-sizing-sm"
                                 autofocus="autofocus"
                                 autocomplete="off"
-                                placeholder="What needs to be done?"
+                                placeholder="O que você precisa fazer?"
                                 v-model="newTodo"
                                 @keyup.enter="addTodo"
-                                v-focus
                             />
                         </div>
                     </div>
                     <div class="card-body">
-                        <ul
-                            v-for="(todo, index) in todos"
-                            :key="todo.id"
-                            class="list-group list-group-flush todo-list"
-                        >
+                        <ul v-for="(item, index) in todos" :key="item.id" class="list-group list-group-flush todo-list">
                             <li class="list-group-item">
                                 <div>
-                                    <input
-                                        type="checkbox"
-                                        class="rounded-circle"
-                                    />
-                                    <label
-                                        v-if="!todo.edited"
-                                        data-placement="top"
-                                        title="Clique para editar"
-                                        >{{ todo.title }}</label
-                                    >
-                                    <input
-                                        v-else
-                                        type="text"
-                                        class="todo-list-edit"
-                                        v-model="todo.title"
-                                        @blur="doneEdit(todo)"
-                                        @keyup.enter="doneEdit(todo)"
-                                    />
+                                    <input type="checkbox" v-model="item.completed">
 
-                                    <button
-                                        type="button"
-                                        class="close"
-                                        aria-label="Close"
-                                        @click="removeTodo(index)"
-                                    >
+                                    <label v-if="!item.edited" data-placement="top" todo="Clique para editar"
+                                        :class="{ completed: item.completed }">{{ item.todo }}</label>
+
+                                    <input v-else type="text" class="todo-list-edit edit" v-model="item.todo" @blur="doneEdit(item)" @keyup.enter="doneEdit(item)" @keyup.esc="cancelEdit(item)" v-focus>
+
+                                    <button type="button" class="close" aria-label="Close" @click="removeTodo(item.id, item)">
                                         <span aria-hidden="true">&times;</span>
                                     </button>
                                 </div>
-                                <div></div>
                             </li>
                         </ul>
                     </div>
+
+                    <div class="card-footer container-extra">
+                        <div>
+                            <label for="checkall" >
+                                <input type="checkbox" name="checkall" :checked="!anyRemaining" @change="checkAllTodos" > Marcar Todos
+                            </label>
+                        </div>
+                        <div>{{ remaining }} itens restantes</div>
+                    </div>
+
+
                 </div>
             </div>
         </div>
+
     </div>
 </template>
 
@@ -73,57 +64,101 @@ export default {
     data() {
         return {
             newTodo: "",
-            idForTodo: 2,
-            todos: [
-                {
-                    id: 1,
-                    title: "FInalizando a lista",
-                    completed: false,
-                    edited: false
-                },
-                {
-                    id: 2,
-                    title: "Estudar",
-                    completed: false,
-                    edited: false
-                }
-            ]
+            beforeEditCache: "",
+
+            resource: this.$resource('http://127.0.0.1:8000/api/tarefas'),
+            todos: [],
         };
+    },
+    computed: {
+        remaining() {
+            return this.todos.filter( todo => !todo.completed ).length;
+        },
+        anyRemaining() {
+            return this.remaining !== 0;
+        }
     },
     directives: {
         focus: {
-            inserted: function (el) {
-                el.focus()
+            inserted: function(el) {
+                el.focus();
             }
         }
     },
     methods: {
+        initialize () {
+            this.resource.get({}).then((response) => {
+                this.todos = response.data.map( item => {
+                    return {
+                        id: item.id,
+                        todo: item.todo,
+                        completed: false,
+                        edited: false,
+                    }
+                });
+
+            });
+        },
         addTodo() {
-            if (
-                this.newTodo.trim() === undefined ||
-                this.newTodo.trim() === ""
-            ) {
+            if (this.newTodo.trim().length < 1) {
                 return;
             }
 
-            this.todos.push({
-                id: this.idForTodo,
-                title: this.newTodo,
-                completed: false
+            const dataToSave = {
+                'todo': this.newTodo
+            };
+
+            const url = '/api/tarefas';
+
+            this.$http.post(url, dataToSave).then(response => {
+                console.log(response);
+                console.log(response.body.todo);
+
+                this.todos.push({
+                    id: response.body.id,
+                    todo: response.body.todo,
+                    completed: false,
+                    edited: false,
+                });
+
+            }, response => {
+                console.log(response);
             });
 
             this.newTodo = "";
-            this.idForTodo++;
         },
         editTodo(todo) {
+            this.beforeEditCache = todo.todo;
             todo.edited = true;
         },
         doneEdit(todo) {
+            if (this.todo.todo.trim() === "") {
+                todo.todo = this.beforeEditCache;
+            }
+
             todo.edited = false;
         },
-        removeTodo(index) {
+        cancelEdit(todo) {
+            todo.edited = false;
+            todo.todo = this.beforeEditCache;
+        },
+        removeTodo(id, index) {
+            this.$http.delete('/api/tarefas/' + id).then((response) => {
+                this.$emit('deleted')
+            });
+
             this.todos.splice(index, 1);
-        }
+        },
+        checkAllTodos() {
+            this.todos.forEach(element => {
+                element.completed = event.target.checked;
+            });
+        },
+
+    },
+    created () {
+        this.initialize();
+
     }
 };
 </script>
@@ -178,6 +213,24 @@ ul li.checked::before {
     border-bottom: none;
 }
 
+.edit {
+	position: relative;
+	margin: 0;
+	width: 100%;
+	font-size: 24px;
+	font-family: inherit;
+	font-weight: inherit;
+	line-height: 1.4em;
+	border: 0;
+	color: inherit;
+	padding: 6px;
+	border: 1px solid #999;
+	box-shadow: inset 0 -1px 5px 0 rgba(0, 0, 0, 0.2);
+	box-sizing: border-box;
+	-webkit-font-smoothing: antialiased;
+	-moz-osx-font-smoothing: grayscale;
+}
+
 .todo-list-edit {
     border: #888;
 }
@@ -187,8 +240,21 @@ ul li.checked::before {
 }
 
 .todo-list-edit:focus-within {
-  box-shadow: 0px 0.2em 2.5em #c4c4c4;
-  transform: scale(1.025);
+    box-shadow: 0px 0.2em 2.5em #c4c4c4;
+    transform: scale(1.025);
+}
+
+.completed {
+    text-decoration: line-through;
+    color: #888;
+}
+
+.container-extra {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    font-size: 16px;
+    border-top: 1px solid lightgray;
 }
 
 </style>

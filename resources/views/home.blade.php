@@ -22,7 +22,6 @@
 </div> -->
 
 <div id="app">
-    <!-- <example-component></example-component> -->
     <todo-list></todo-list>
  </div>
 @endsection
