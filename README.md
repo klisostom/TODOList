@@ -1,5 +1,8 @@
 # Projeto teste de uma aplicação de Tarefas (TODO)
 
+Foi criado uma aplicação de TODO, numa tela land-page. Onde se cria uma tarefa a se cumprir, a mesma já é mostrada na tela como uma lista. Podendo-se marcar as que já foram realizadas e excluí-las.
+Os arquivos do front estão no caminho: TODOList/resources/
+
 ### Itens concluídos
 
 > 1) a, b, c, d, g.
