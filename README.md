@@ -7,5 +7,6 @@
 ###
 - As credenciais do banco são configuradas no arquivo .env do laravel. Em seguida, basta apenas executar as migrations com o comando `php artisan migrate`.
 - O front foi criado com o Vue.js, seguindo as instruções no link: `https://laravel.com/docs/7.x/frontend`.
-- executar `npm install`.
-- executar `npm run watch`.
+- Executar `npm install`.
+- Executar `npm run watch`.
+- O sistema de login foi criado, então terá que usar um usuário do banco local ou criar um novo usuário na tela inicial.
