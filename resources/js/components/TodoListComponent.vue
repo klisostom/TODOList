@@ -1,7 +1,5 @@
 <template>
-
     <div class="container">
-
         <div class="row justify-content-center">
             <div class="col-md-8">
                 <div class="card">
@@ -23,17 +21,44 @@
                         </div>
                     </div>
                     <div class="card-body">
-                        <ul v-for="(item, index) in todos" :key="item.id" class="list-group list-group-flush todo-list">
+                        <ul
+                            v-for="item in todos"
+                            :key="item.id"
+                            class="list-group list-group-flush todo-list"
+                        >
                             <li class="list-group-item">
                                 <div>
-                                    <input type="checkbox" v-model="item.completed">
+                                    <input
+                                        type="checkbox"
+                                        v-model="item.completed"
+                                    />
 
-                                    <label v-if="!item.edited" data-placement="top" todo="Clique para editar"
-                                        :class="{ completed: item.completed }">{{ item.todo }}</label>
+                                    <label
+                                        v-if="!item.edited"
+                                        @dblclick="editTodo(item)"
+                                        data-placement="top"
+                                        todo="Clique para editar"
+                                        :class="{ completed: item.completed }"
+                                        >{{ item.todo }}
+                                    </label>
 
-                                    <input v-else type="text" class="todo-list-edit edit" v-model="item.todo" @blur="doneEdit(item)" @keyup.enter="doneEdit(item)" @keyup.esc="cancelEdit(item)" v-focus>
+                                    <input
+                                        v-else
+                                        type="text"
+                                        class="todo-list-edit edit"
+                                        v-model="item.todo"
+                                        @blur="doneEdit(item)"
+                                        @keyup.enter="doneEdit(item)"
+                                        @keyup.esc="cancelEdit(item)"
+                                        v-focus
+                                    />
 
-                                    <button type="button" class="close" aria-label="Close" @click="removeTodo(item.id, item)">
+                                    <button
+                                        type="button"
+                                        class="close"
+                                        aria-label="Close"
+                                        @click="removeTodo(item.id, item)"
+                                    >
                                         <span aria-hidden="true">&times;</span>
                                     </button>
                                 </div>
@@ -43,18 +68,21 @@
 
                     <div class="card-footer container-extra">
                         <div>
-                            <label for="checkall" >
-                                <input type="checkbox" name="checkall" :checked="!anyRemaining" @change="checkAllTodos" > Marcar Todos
+                            <label for="checkall">
+                                <input
+                                    type="checkbox"
+                                    name="checkall"
+                                    :checked="!anyRemaining"
+                                    @change="checkAllTodos"
+                                />
+                                Marcar Todos
                             </label>
                         </div>
                         <div>{{ remaining }} itens restantes</div>
                     </div>
-
-
                 </div>
             </div>
         </div>
-
     </div>
 </template>
 
@@ -66,13 +94,13 @@ export default {
             newTodo: "",
             beforeEditCache: "",
 
-            resource: this.$resource('http://127.0.0.1:8000/api/tarefas'),
-            todos: [],
+            resource: this.$resource("http://127.0.0.1:8000/api/tarefas"),
+            todos: []
         };
     },
     computed: {
         remaining() {
-            return this.todos.filter( todo => !todo.completed ).length;
+            return this.todos.filter(todo => !todo.completed).length;
         },
         anyRemaining() {
             return this.remaining !== 0;
@@ -86,17 +114,16 @@ export default {
         }
     },
     methods: {
-        initialize () {
-            this.resource.get({}).then((response) => {
-                this.todos = response.data.map( item => {
+        initialize() {
+            this.resource.get({}).then(response => {
+                this.todos = response.data.map(item => {
                     return {
                         id: item.id,
                         todo: item.todo,
                         completed: false,
-                        edited: false,
-                    }
+                        edited: false
+                    };
                 });
-
             });
         },
         addTodo() {
@@ -105,25 +132,24 @@ export default {
             }
 
             const dataToSave = {
-                'todo': this.newTodo
+                todo: this.newTodo
             };
 
-            const url = '/api/tarefas';
+            const url = "/api/tarefas";
 
-            this.$http.post(url, dataToSave).then(response => {
-                console.log(response);
-                console.log(response.body.todo);
-
-                this.todos.push({
-                    id: response.body.id,
-                    todo: response.body.todo,
-                    completed: false,
-                    edited: false,
-                });
-
-            }, response => {
-                console.log(response);
-            });
+            this.$http.post(url, dataToSave).then(
+                response => {
+                    this.todos.push({
+                        id: response.body.id,
+                        todo: response.body.todo,
+                        completed: false,
+                        edited: false
+                    });
+                },
+                response => {
+                    console.log(response);
+                }
+            );
 
             this.newTodo = "";
         },
@@ -132,19 +158,26 @@ export default {
             todo.edited = true;
         },
         doneEdit(todo) {
-            if (this.todo.todo.trim() === "") {
+            this.$http.put('/api/tarefas/' + todo.id, todo).then(response => {
+                todo.todo = response.body.todo;
+            }, error => {
+                console.log(error);
+            });
+
+            if (this.todo === undefined || this.todo.todo.trim() === "") {
                 todo.todo = this.beforeEditCache;
             }
 
             todo.edited = false;
         },
         cancelEdit(todo) {
+
             todo.edited = false;
             todo.todo = this.beforeEditCache;
         },
         removeTodo(id, index) {
-            this.$http.delete('/api/tarefas/' + id).then((response) => {
-                this.$emit('deleted')
+            this.$http.delete("/api/tarefas/" + id).then(response => {
+                this.$emit("deleted");
             });
 
             this.todos.splice(index, 1);
@@ -153,12 +186,10 @@ export default {
             this.todos.forEach(element => {
                 element.completed = event.target.checked;
             });
-        },
-
+        }
     },
-    created () {
+    created() {
         this.initialize();
-
     }
 };
 </script>
@@ -213,23 +244,7 @@ ul li.checked::before {
     border-bottom: none;
 }
 
-.edit {
-	position: relative;
-	margin: 0;
-	width: 100%;
-	font-size: 24px;
-	font-family: inherit;
-	font-weight: inherit;
-	line-height: 1.4em;
-	border: 0;
-	color: inherit;
-	padding: 6px;
-	border: 1px solid #999;
-	box-shadow: inset 0 -1px 5px 0 rgba(0, 0, 0, 0.2);
-	box-sizing: border-box;
-	-webkit-font-smoothing: antialiased;
-	-moz-osx-font-smoothing: grayscale;
-}
+
 
 .todo-list-edit {
     border: #888;
@@ -256,5 +271,4 @@ ul li.checked::before {
     font-size: 16px;
     border-top: 1px solid lightgray;
 }
-
 </style>

@@ -2001,13 +2001,41 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 /* harmony default export */ __webpack_exports__["default"] = ({
   name: "todo-list",
   data: function data() {
     return {
       newTodo: "",
       beforeEditCache: "",
-      resource: this.$resource('http://127.0.0.1:8000/api/tarefas'),
+      resource: this.$resource("http://127.0.0.1:8000/api/tarefas"),
       todos: []
     };
   },
@@ -2051,13 +2079,10 @@ __webpack_require__.r(__webpack_exports__);
       }
 
       var dataToSave = {
-        'todo': this.newTodo
+        todo: this.newTodo
       };
-      var url = '/api/tarefas';
+      var url = "/api/tarefas";
       this.$http.post(url, dataToSave).then(function (response) {
-        console.log(response);
-        console.log(response.body.todo);
-
         _this2.todos.push({
           id: response.body.id,
           todo: response.body.todo,
@@ -2074,7 +2099,13 @@ __webpack_require__.r(__webpack_exports__);
       todo.edited = true;
     },
     doneEdit: function doneEdit(todo) {
-      if (this.todo.todo.trim() === "") {
+      this.$http.put('/api/tarefas/' + todo.id, todo).then(function (response) {
+        todo.todo = response.body.todo;
+      }, function (error) {
+        console.log(error);
+      });
+
+      if (this.todo === undefined || this.todo.todo.trim() === "") {
         todo.todo = this.beforeEditCache;
       }
 
@@ -2087,8 +2118,8 @@ __webpack_require__.r(__webpack_exports__);
     removeTodo: function removeTodo(id, index) {
       var _this3 = this;
 
-      this.$http["delete"]('/api/tarefas/' + id).then(function (response) {
-        _this3.$emit('deleted');
+      this.$http["delete"]("/api/tarefas/" + id).then(function (response) {
+        _this3.$emit("deleted");
       });
       this.todos.splice(index, 1);
     },
@@ -6537,7 +6568,7 @@ exports = module.exports = __webpack_require__(/*! ../../../node_modules/css-loa
 
 
 // module
-exports.push([module.i, "\n* {\n    box-sizing: border-box;\n}\nul {\n    margin: 0;\n    padding: 0;\n}\n\n/* Style the list items */\nul li {\n    cursor: pointer;\n    position: relative;\n    padding: 12px 8px 12px 40px;\n    font-size: 18px;\n    transition: 0.2s;\n\n    /* make the list items unselectable */\n    -webkit-user-select: none;\n    -moz-user-select: none;\n    -ms-user-select: none;\n    user-select: none;\n}\n\n/* When clicked on, add a background color and strike out text */\nul li.checked {\n    background: #888;\n    color: #fff;\n    text-decoration: line-through;\n}\n\n/* Add a \"checked\" mark when clicked on */\nul li.checked::before {\n    content: \"\";\n    position: absolute;\n    border-color: #fff;\n    border-style: solid;\n    border-width: 0 2px 2px 0;\n    top: 10px;\n    left: 16px;\n    transform: rotate(45deg);\n    height: 15px;\n    width: 7px;\n}\n.todo-list li:last-child {\n    border-bottom: none;\n}\n.edit {\n\tposition: relative;\n\tmargin: 0;\n\twidth: 100%;\n\tfont-size: 24px;\n\tfont-family: inherit;\n\tfont-weight: inherit;\n\tline-height: 1.4em;\n\tborder: 0;\n\tcolor: inherit;\n\tpadding: 6px;\n\tborder: 1px solid #999;\n\tbox-shadow: inset 0 -1px 5px 0 rgba(0, 0, 0, 0.2);\n\tbox-sizing: border-box;\n\t-webkit-font-smoothing: antialiased;\n\t-moz-osx-font-smoothing: grayscale;\n}\n.todo-list-edit {\n    border: #888;\n}\n.todo-list-edit:focus {\n    outline: 3px solid rgb(255, 145, 0);\n}\n.todo-list-edit:focus-within {\n    box-shadow: 0px 0.2em 2.5em #c4c4c4;\n    transform: scale(1.025);\n}\n.completed {\n    text-decoration: line-through;\n    color: #888;\n}\n.container-extra {\n    display: flex;\n    align-items: center;\n    justify-content: space-between;\n    font-size: 16px;\n    border-top: 1px solid lightgray;\n}\n\n", ""]);
+exports.push([module.i, "\n* {\n    box-sizing: border-box;\n}\nul {\n    margin: 0;\n    padding: 0;\n}\n\n/* Style the list items */\nul li {\n    cursor: pointer;\n    position: relative;\n    padding: 12px 8px 12px 40px;\n    font-size: 18px;\n    transition: 0.2s;\n\n    /* make the list items unselectable */\n    -webkit-user-select: none;\n    -moz-user-select: none;\n    -ms-user-select: none;\n    user-select: none;\n}\n\n/* When clicked on, add a background color and strike out text */\nul li.checked {\n    background: #888;\n    color: #fff;\n    text-decoration: line-through;\n}\n\n/* Add a \"checked\" mark when clicked on */\nul li.checked::before {\n    content: \"\";\n    position: absolute;\n    border-color: #fff;\n    border-style: solid;\n    border-width: 0 2px 2px 0;\n    top: 10px;\n    left: 16px;\n    transform: rotate(45deg);\n    height: 15px;\n    width: 7px;\n}\n.todo-list li:last-child {\n    border-bottom: none;\n}\n.todo-list-edit {\n    border: #888;\n}\n.todo-list-edit:focus {\n    outline: 3px solid rgb(255, 145, 0);\n}\n.todo-list-edit:focus-within {\n    box-shadow: 0px 0.2em 2.5em #c4c4c4;\n    transform: scale(1.025);\n}\n.completed {\n    text-decoration: line-through;\n    color: #888;\n}\n.container-extra {\n    display: flex;\n    align-items: center;\n    justify-content: space-between;\n    font-size: 16px;\n    border-top: 1px solid lightgray;\n}\n", ""]);
 
 // exports
 
@@ -38428,7 +38459,7 @@ var render = function() {
           _c(
             "div",
             { staticClass: "card-body" },
-            _vm._l(_vm.todos, function(item, index) {
+            _vm._l(_vm.todos, function(item) {
               return _c(
                 "ul",
                 {
@@ -38487,9 +38518,19 @@ var render = function() {
                               attrs: {
                                 "data-placement": "top",
                                 todo: "Clique para editar"
+                              },
+                              on: {
+                                dblclick: function($event) {
+                                  return _vm.editTodo(item)
+                                }
                               }
                             },
-                            [_vm._v(_vm._s(item.todo))]
+                            [
+                              _vm._v(
+                                _vm._s(item.todo) +
+                                  "\n                                "
+                              )
+                            ]
                           )
                         : _c("input", {
                             directives: [
@@ -38582,7 +38623,9 @@ var render = function() {
                   domProps: { checked: !_vm.anyRemaining },
                   on: { change: _vm.checkAllTodos }
                 }),
-                _vm._v(" Marcar Todos\n                        ")
+                _vm._v(
+                  "\n                            Marcar Todos\n                        "
+                )
               ])
             ]),
             _vm._v(" "),

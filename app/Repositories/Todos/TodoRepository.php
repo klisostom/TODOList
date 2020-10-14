@@ -16,21 +16,21 @@ class TodoRepository extends BaseRepository
 
     public function all()
     {
-        return \App\Models\Todo::all();
+        return Todo::all();
     }
 
     public function show(int $todoId)
     {
-        $todoExist = \App\Models\Todo::find($todoId);
+        $todoExist = Todo::find($todoId);
 
-        return ($todoExist) ? parent::show($todoId) : false;
+        return isset($todoExist) ? parent::show($todoId) : false;
     }
 
     public function delete(int $todoId)
     {
-        $todoExist = \App\Models\Todo::find($todoId);
+        $todoExist = Todo::find($todoId);
 
-        return ($todoExist) ? parent::delete($todoId) : false;
+        return isset($todoExist) ? parent::delete($todoId) : false;
     }
 
     public function create(array $dados)
@@ -40,8 +40,10 @@ class TodoRepository extends BaseRepository
 
     public function update(array $data, int $id)
     {
-        $todoExist = \App\Models\Todo::find($id);
+        $todoExist = Todo::find($id);
+        $todoExist->todo = $data['todo'];
+        $todoExist->save();
 
-        return ($todoExist) ? parent::update($data, $id) : false;
+        return $todoExist;
     }
 }

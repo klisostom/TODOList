@@ -64,6 +64,11 @@ class TodoController extends Controller
      */
     public function update(Request $request, $id)
     {
+        $message = $this->repository->update($request->all(), $id);
+
+        return isset($message) ? response()
+            ->json($message, 200) : response()
+            ->json(['Não foi possível atualizar os dados.'], 500);
     }
 
     /**
